@@ -1,18 +1,21 @@
-function TaskItem({ task, setTasks }) {
-  const toggleTask = () => {
-    setTasks(prev =>
-      prev.map(t =>
-        t.id === task.id ? { ...t, completed: !t.completed } : t
-      )
-    );
-  };
+import React from "react";
+import { useTaskContext } from "../context/TaskContext";
+
+function TaskItem({ task }) {
+  const { toggleTask } = useTaskContext();
+
+  console.log("rendered", task.id);
 
   return (
     <li>
-      <input type="checkbox" checked={task.completed} onChange={toggleTask} />
+      <input
+        type="checkbox"
+        checked={task.completed}
+        onChange={() => toggleTask(task.id)}
+      />
       {task.text}
     </li>
   );
 }
 
-export default TaskItem;
+export default React.memo(TaskItem);

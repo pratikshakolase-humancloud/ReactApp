@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-function useTasks() {
+export default function useTasks() {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
@@ -12,7 +12,20 @@ function useTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  return { tasks, setTasks };
-}
+  const addTask = useCallback(text => {
+    setTasks(prev => [
+      ...prev,
+      { id: Date.now(), text, completed: false }
+    ]);
+  }, []);
 
-export default useTasks;
+  const toggleTask = useCallback(id => {
+    setTasks(prev =>
+      prev.map(t =>
+        t.id === id ? { ...t, completed: !t.completed } : t
+      )
+    );
+  }, []);
+
+  return { tasks, addTask, toggleTask };
+}
